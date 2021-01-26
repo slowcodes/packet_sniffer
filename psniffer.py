@@ -27,7 +27,7 @@ def process_packet(packet):
 
         login_info = get_login_info(packet)
         if login_info:
-            print ("Captured login info >> " + login_info)
+            print ("\n\nCaptured login info >> " + login_info)
         # print (packet.show())
 
 
